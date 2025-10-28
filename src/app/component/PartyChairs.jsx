@@ -90,7 +90,8 @@ const PartyChairs = () => {
   const marqueeItems = [...parties, ...parties];
 
   return (
-    <div
+    <>
+    {parties.length > 0 && <div
       ref={wrapperRef}
       onMouseEnter={() => (pausedRef.current = true)}
       onMouseLeave={() => (pausedRef.current = false)}
@@ -216,7 +217,8 @@ const PartyChairs = () => {
           )}
         </AnimatePresence>
       </>
-    </div>
+    </div>}
+    </>
   );
 };
 

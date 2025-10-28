@@ -62,53 +62,12 @@ body {
 
 /* Utility to force the digit font (if you need to target an element) */
 .digits {
-  font-family: "EloquiaDigits", var(--font-shams, Arial, Helvetica, sans-serif);
+  font-family: "EloquiaDigits", var(--font-shams, Arial, Helvetica, sans-serif)!important;
 }
 
 /* Tailwind-style utility used in components */
 .font-eloquia {
-  font-family: "EloquiaDigits", var(--font-shams, Arial, Helvetica, sans-serif);
+  font-family: "EloquiaDigits", var(--font-shams, Arial, Helvetica, sans-serif)!important;
 }
 
-@layer components {
-  .hide-scrollbar {
-    scrollbar-width: 0px;
-    scrollbar-color: transparent;
-  }
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-}
 
-@keyframes scrollX {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes scrollX {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* wrapper ensures overflow hidden */
-.scroll-wrapper {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-/* moving content */
-.scroll-content {
-  display: flex;
-  width: max-content;
-  animation: scrollX 40s linear infinite;
-  will-change: transform;
-}

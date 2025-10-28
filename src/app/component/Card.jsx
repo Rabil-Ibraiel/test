@@ -97,14 +97,14 @@ const PartyCard = ({ party }) => {
             >
               <div className="flex flex-col text-white absolute top-1/2 -translate-y-1/2 left-3 justify-center items-center">
                 <motion.p
-                className="digits font-eloquia text-4xl font-bold  text-white"
+                className="digits font-eloquia text-3xl font-bold  text-white"
                 style={{ left: 12 }}
                 animate={{
                   opacity: open ? [0, 1] : 0,
                   transition: { type: "tween", duration: 0.75, ease: "easeInOut" },
                 }}
               >
-                <span className="text-2xl font-normal">%</span>
+                <span className="text-xl font-normal">%</span>
                 {percent}
                 
               </motion.p>

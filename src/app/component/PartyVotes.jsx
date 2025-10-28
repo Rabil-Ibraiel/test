@@ -5,7 +5,6 @@ import { useState } from "react";
 
 const PartyVotes = ({ party }) => {
   const [hover, setHover] = useState(false);
-  console.log(party);
   return (
     <>
       <div
@@ -40,7 +39,7 @@ const PartyVotes = ({ party }) => {
         </div>
 
         <div className="flex items-baseline lg:w-3/12 w-[25%] justify-center">
-          <h3 className="font-bold lg:text-lg pl-2">
+          <h3 className="font-bold text-xl pl-2">
             <span className="digits font-eloquia">
               {String(
                 party?.locations
@@ -52,7 +51,7 @@ const PartyVotes = ({ party }) => {
         </div>
 
         <div className="flex items-baseline lg:w-3/12 w-[25%] justify-center ">
-          <h3 className="font-bold lg:text-lg">
+          <h3 className="font-bold text-xl">
             <span className="digits font-eloquia">
               {party.thisYearChairs > 9 ? party.thisYearChairs : `0${party.thisYearChairs}`}
             </span>
@@ -101,7 +100,7 @@ const PartyVotes = ({ party }) => {
               <div className="flex">
                 <h3 className="flex xs:flex-col-reverse items-center">
                   <span className="text-base">عدد المقاعد<span className="xs:hidden inline-flex">:</span></span>
-                  <span className="digits font-eloquia xs:text-2xl text-xl font-bold mr-1">
+                  <span className="digits font-eloquia text-xl font-bold mr-1">
                     {party.thisYearChairs > 9 ? party.thisYearChairs : `0${party.thisYearChairs}`}
                   </span>
                 </h3>
