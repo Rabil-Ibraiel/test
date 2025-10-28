@@ -5,10 +5,8 @@ import { useEffect, useRef, useState } from "react";
 
 const BREAKPOINTS = { md: 700, lg: 1024 };
 
-// keep your baseline if you want it
 const getMinBarPx = () => 400;
 
-// md: cap to the CARD width; lg+: min(1050, CARD width)
 const getMaxBarPx = (vw, cardW) =>
   vw >= BREAKPOINTS.lg ? Math.min(1125, cardW+60) : cardW+60;
 
@@ -16,7 +14,6 @@ const PartyCard = ({ party }) => {
   const id = party?.abbr || "PDK";
   const [open, setOpen] = useState(false);
 
-  // Measure the CARD width (actual space the bar can fill)
   const cardRef = useRef(null);
   const [cardW, setCardW] = useState(0);
   useEffect(() => {
@@ -32,7 +29,6 @@ const PartyCard = ({ party }) => {
     return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, []);
 
-  // Gate by viewport width AFTER mount (avoid hydration mismatch)
   const [isMdUp, setIsMdUp] = useState(false);
   const [vw, setVw] = useState(0);
   useEffect(() => {

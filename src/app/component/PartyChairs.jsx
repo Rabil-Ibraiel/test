@@ -94,11 +94,11 @@ const PartyChairs = () => {
       ref={wrapperRef}
       onMouseEnter={() => (pausedRef.current = true)}
       onMouseLeave={() => (pausedRef.current = false)}
-      className="w-full lg:h-10 h-11 overflow-hidden flex items-center relative text-[rgb(26,40,107)]"
+      className="w-full lg:h-10 h-8 overflow-hidden flex items-center relative text-[rgb(26,40,107)]"
     >
       <>
         {/* ⬇️ Marquee track */}
-        <div style={{ width: "100%" }} className="flex-1 mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div style={{ width: "100%" }} className="flex-1 mask-[linear-gradient(to_right,transparent,black_6%,black_95%,transparent)]">
           <div
             ref={trackRef}
             className="flex whitespace-nowrap will-change-transform"
@@ -128,14 +128,14 @@ const PartyChairs = () => {
                   {/* top accent bar keeps the original party color */}
                   <div
                     style={{ backgroundColor: party.color }}
-                    className="w-full lg:h-2 h-1 absolute top-0 left-0"
+                    className="w-full lg:h-2 h-[11px] absolute top-0 left-0"
                   />
 
                   {/* swap text on hover */}
-                  <p className="text-xl font-bold text-center absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                  <p className="lg:text-xl text-lg font-bold text-center absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
                     {party.arabicName}
                   </p>
-                  <p className="w-full text-3xl text-center font-bold absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 group-hover:opacity-100 text-white font-eloquia">
+                  <p className="w-full lg:text-3xl text-2xl text-center font-bold absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 group-hover:opacity-100 text-white font-eloquia">
                     {party.thisYearChairs}
                   </p>
                 </div>
@@ -169,7 +169,9 @@ const PartyChairs = () => {
               {/* Column 2 */}
               <div
                 className="lg:w-[20%] w-[22%] h-full flex items-center justify-between lg:px-4 md:px-3 sm:px-2 lg:text-2xl text-lg font-bold text-white"
-                style={{ backgroundColor: parties.find((p) => p.abbr === click)?.color }}
+                  style={{
+    backgroundImage: `linear-gradient(0deg, ${parties.find((p) => p.abbr === click)?.color}, color-mix(in oklab, ${parties.find((p) => p.abbr === click)?.color} 88%, white))`,
+  }}
               >
                 <h4 className="flex items-baseline lg:gap-2 md:gap-1 gap-0.5">
                   <p className="digits font-eloquia lg:text-2xl text-lg font-bold mr-1">
@@ -181,11 +183,15 @@ const PartyChairs = () => {
               </div>
 
               {/* Divider */}
-              <div className="divider w-2 h-full bg-white" />
+              <div className="divider w-2 h-full bg-white" style={{
+    backgroundImage: `linear-gradient(0deg, ${parties.find((p) => p.abbr === click)?.color}, color-mix(in oklab, ${parties.find((p) => p.abbr === click)?.color} 86%, black))`,
+  }} />
 
               {/* Column 3 */}
               <div
-                style={{ backgroundColor: parties.find((p) => p.abbr === click)?.color }}
+                style={{
+    backgroundImage: `linear-gradient(0deg, ${parties.find((p) => p.abbr === click)?.color}, color-mix(in oklab, ${parties.find((p) => p.abbr === click)?.color} 88%, white))`,
+  }}
                 className="lg:w-[20%] w-[22%] h-full flex items-center justify-between lg:px-4 md:px-3 sm:px-2 text-white lg:text-2xl text-lg"
               >
                 <h4 className="flex items-baseline lg:gap-2 md:gap-1 gap-0.5">

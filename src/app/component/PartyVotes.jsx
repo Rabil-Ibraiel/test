@@ -60,7 +60,7 @@ const PartyVotes = ({ party }) => {
         </div>
       </div>
       <div
-        className="w-full md:hidden xs:min-h-16 max-xs:min-h-24 h-fit border transition-all duration-300 ease-in-out border-white overflow-hidden cursor-pointer text-[rgb(26,40,107)] hover:text-white flex gap-3 items-center sm:pr-3 px-1.5 rounded relative"
+        className="w-full md:hidden xs:min-h-16 max-xs:min-h-24 h-fit border transition-all duration-300 ease-in-out border-white overflow-hidden cursor-pointer text-[rgb(26,40,107)] flex gap-3 items-center sm:pr-3 px-1.5 rounded relative"
       >
                 <div
           className="w-1 h-full absolute top-0 right-0 z-10"
@@ -116,7 +116,7 @@ const PartyVotes = ({ party }) => {
 
 export default PartyVotes;
 
-// Same code for before all:ذ
+// Same code for before all:
 
 {
   /* <div className="w-full h-12 border transition-all duration-300 ease-in-out border-white overflow-hidden bg-[rgb(241,240,240)] hover:bg-yellow-400 cursor-pointer text-[rgb(26,40,107)] hover:text-white flex items-center justify-between px-4 rounded">
