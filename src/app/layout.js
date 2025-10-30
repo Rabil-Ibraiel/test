@@ -50,13 +50,29 @@ const eloquia = localFont({
 });
 
 export const metadata = {
-  title: "IRAQI ELECTION 2025",
-  description: "Shams TV",
+  title: "نتائج انتخابات العراق 2025 — شمس TV",
+  description:
+    "نتائج انتخابات العراق 2025 على شمس TV: عرض منظم للأصوات والمقاعد لكل حزب بواجهة واضحة وسهلة القراءة.",
+  metadataBase: new URL("https://test-iota-two.vercel.app"),
+  openGraph: {
+    title: "نتائج انتخابات العراق 2025 — شمس TV",
+    description:
+      "منصة تعرض نتائج انتخابات العراق 2025: أصوات ومقاعد كل حزب بواجهة بسيطة تسهّل متابعة الأرقام.",
+    url: "https://test-iota-two.vercel.app",
+    siteName: "شمس TV",
+    locale: "ar_IQ",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "نتائج انتخابات العراق 2025 — شمس TV",
+    description: "عرض واضح لنتائج الانتخابات: أصوات ومقاعد كل حزب.",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body className={`${shams.variable} ${eloquia.variable} antialiased`}>
         {children}
       </body>

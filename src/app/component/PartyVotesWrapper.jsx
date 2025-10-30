@@ -15,7 +15,8 @@ export default function PartyVotesWrapper({ selectedRegion }) {
         setLoading(false);
       });
     } else {
-      getPartiesByRegion(selectedRegion.slice(3, 5)).then((data) => {
+      const normalizedCode = selectedRegion.replace("-", "_");
+      getPartiesByRegion(normalizedCode).then((data) => {
         setParties(data);
         setLoading(false);
       });
@@ -25,15 +26,15 @@ export default function PartyVotesWrapper({ selectedRegion }) {
     <div className="lg:w-2/3 md:w-8/12 w-full rounded overflow-hidden flex flex-col lg:gap-3 gap-2">
       <div className="w-full min-h-10 border transition-all duration-300 ease-in-out overflow-hidden bg-linear-to-t from-[#275394] to-[#4169A5] text-[rgb(241,240,240)] hidden md:flex items-center justify-between lg:px-4 rounded font-bold">
         <div className="flex items-center md:w-6/12 overflow-hidden pr-2 ">
-          <h3>اسم الحزب</h3>
+          <span>اسم الحزب</span>
         </div>
 
         <div className="lg:w-3/12 w-[25%] flex items-center justify-center">
-          <h3>عدد الأصوات</h3>
+          <span>عدد الأصوات</span>
         </div>
 
         <div className="lg:w-3/12 w-[25%] flex items-center justify-center ">
-          <h3>عدد المقاعد</h3>
+          <span>عدد المقاعد</span>
         </div>
       </div>
       {loading ? (

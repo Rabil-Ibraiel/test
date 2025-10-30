@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,23 +8,30 @@ datasource db {
 }
 
 model Party {
-  id                  Int         @id @default(autoincrement())
-  englishName         String
-  arabicName          String
-  abbr                String      @unique
-  numberOfVoting      BigInt
-  numberOfSubscribing BigInt
-  lastYearChairs      Int
-  thisYearChairs      Int
-  color               String
-  locations           Location[]
+  id             Int        @id @default(autoincrement())
+  arabicName     String
+  abbr           String     @unique
+  numberOfVoting Int 
+  // Maps Prisma name -> existing DB column
+  lastElecChairs Int        @map("lastYearChairs")
+  thisElecChairs Int        @map("thisYearChairs")
+  color          String     // make String? if some rows don't have a color
+  locations      Location[]
+
+  @@index([abbr])
 }
 
 model Location {
-  id                  Int      @id @default(autoincrement())
-  regionCode          String
-  numberOfVoting      BigInt
-  numberOfSubscribing BigInt
-  partyId             Int
-  party               Party    @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  id             Int     @id @default(autoincrement())
+  regionCode     String
+  numberOfVoting Int
+  partyId        Int
+  party          Party   @relation(fields: [partyId], references: [id], onDelete: Cascade)
+
+  // Enforce: at most one row per (party, region)
+  @@unique([partyId, regionCode], name: "party_region_unique")
+
+  // Helpful for queries
+  @@index([partyId])
+  @@index([regionCode])
 }

@@ -1,48 +1,63 @@
 import prisma from "@/lib/prisma";
 
-export default async function handler(req, res) {
-  if (req.method === "GET") {
-    const parties = await prisma.party.findMany({
-      include: {
-        chairs: true,
-        locations: true,
-      },
-    });
-    return res.status(200).json(parties);
+const normalizeBigInts = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeBigInts);
   }
 
-  if (req.method === "POST") {
-    const data = req.body;
-
-    const newParty = await prisma.party.create({
-      data: {
-        englishName: data.englishName,
-        arabicName: data.arabicName,
-        abbr: data.abbr,
-        numberOfVoting: data.numberOfVoting,
-        numberOfSubscribing: data.numberOfSubscribing,
-        chairs: {
-          create: {
-            thisYear: data.chairs.thisYear,
-            lastYear: data.chairs.lastYear,
-          },
-        },
-        locations: {
-          create: data.locations.map((loc) => ({
-            regionCode: loc.regionCode,
-            numberOfVoting: loc.numberOfVoting,
-            numberOfSubscribing: loc.numberOfSubscribing,
-          })),
-        },
-      },
-      include: {
-        chairs: true,
-        locations: true,
-      },
-    });
-
-    return res.status(201).json(newParty);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, val]) => [
+        key,
+        normalizeBigInts(val),
+      ])
+    );
   }
 
-  res.status(405).end();
+  return typeof value === "bigint" ? Number(value) : value;
+};
+
+export async function GET() {
+  const parties = await prisma.party.findMany({
+    include: {
+      locations: true,
+    },
+    orderBy: {
+      numberOfVoting: "desc",
+    },
+  });
+
+  return Response.json(normalizeBigInts(parties));
+}
+
+export async function POST(request) {
+  const payload = await request.json();
+
+  const newParty = await prisma.party.create({
+    data: {
+      englishName: payload.englishName,
+      arabicName: payload.arabicName,
+      abbr: payload.abbr,
+      numberOfVoting: Number(payload.numberOfVoting ?? 0),
+      thisElecChairs: payload.thisElecChairs ?? 0,
+      lastElecChairs: payload.lastElecChairs ?? 0,
+      color: payload.color,
+      locations: payload.locations
+        ? {
+            create: payload.locations.map((loc) => ({
+              regionCode: loc.regionCode,
+              numberOfVoting: Number(loc.numberOfVoting ?? 0),
+            })),
+          }
+        : undefined,
+    },
+    include: {
+      locations: true,
+    },
+  });
+
+  return new Response(JSON.stringify(normalizeBigInts(newParty)), {
+    status: 201,
+    headers: { "content-type": "application/json" },
+  });
 }
