@@ -4,26 +4,31 @@
 import prisma from "@/lib/prisma";
 
 export async function getPartiesByRegion(regionCode) {
-  const parties = await prisma.party.findMany({
-    where: {
-      locations: {
-        some: { regionCode },
-      },
-    },
-    include: {
-      locations: {
-        where: { regionCode },
+  const rows = await prisma.location.findMany({
+    where: { regionCode },
+    orderBy: { numberOfVoting: "desc" },
+    take: 6,
+    select: {
+      numberOfVoting: true, // Int
+      thisElecChairs: true,
+      party: {
+        select: {
+          id: true,
+          arabicName: true,
+          abbr: true,
+          color: true,
+        },
       },
     },
   });
 
-  return parties
-    .sort(
-      (a, b) =>
-        Number(b.locations[0]?.numberOfVoting ?? 0) -
-        Number(a.locations[0]?.numberOfVoting ?? 0)
-    )
-    .slice(0, 6);
+  // Flatten: return party info + region votes
+  return rows.map((r) => ({
+    ...r.party,
+    regionCode,
+    numberOfVoting: r.numberOfVoting, // already Int
+    thisElecChairs: r.thisElecChairs,
+  }));
 }
 
 export async function getTopParties() {
@@ -39,7 +44,6 @@ export async function getTopParties() {
       numberOfVoting: true,
       color: true,
       thisElecChairs: true,
-      lastElecChairs: true,
     },
   });
 }
@@ -51,4 +55,3 @@ export async function getParties() {
     },
   });
 }
-

@@ -6,12 +6,47 @@ import { useEffect, useRef, useState } from "react";
 const BREAKPOINTS = { md: 700, lg: 1024 };
 
 const getMinBarPx = () => 400;
-
 const getMaxBarPx = (vw, cardW) =>
   vw >= BREAKPOINTS.lg ? Math.min(1125, cardW + 60) : cardW + 60;
 
+/* ---------- helpers ---------- */
+const normNum = (val) => {
+  if (val === null || val === undefined) return null;
+  if (typeof val === "number") return Number.isFinite(val) ? val : null;
+  if (typeof val === "bigint") {
+    const n = Number(val);
+    return Number.isFinite(n) ? n : null;
+  }
+  // string-ish
+  const n = Number(String(val).trim());
+  return Number.isFinite(n) ? n : null;
+};
+
+// votes: localized with thousands separators, "—" if missing
+const formatVotes = (val) => {
+  const n = normNum(val);
+  if (n === null) return "—";
+  return Math.trunc(n).toLocaleString("en-US");
+};
+
+// chairs: show "0" for zero, pad 1..9 to 2 digits, pass-through >=10
+const formatChairs = (val) => {
+  const n = normNum(val);
+  if (n === null) return "—";
+  const i = Math.trunc(n);
+  if (i > 9) return String(i);
+  return String(i).padStart(2, "0");
+};
+
+const safeStr = (s, fallback = "") =>
+  typeof s === "string" && s.trim() ? s : fallback;
+
+/* ---------- component ---------- */
 const PartyCard = ({ party }) => {
-  const id = party?.abbr || "PDK";
+  // guard early
+  if (!party) return null;
+
+  const id = safeStr(party?.abbr, "PDK");
   const [open, setOpen] = useState(false);
 
   const cardRef = useRef(null);
@@ -48,11 +83,12 @@ const PartyCard = ({ party }) => {
     };
   }, []);
 
-  // Voting → percent (0..100)
-  const votingRatio = Math.min(
-    1,
-    Math.max(0, Number(party.numberOfVoting) / 1_000_000)
-  );
+  // numbers (normalized once)
+  const votesRaw = party?.numberOfVoting ?? null;
+  const votesN = normNum(votesRaw) ?? 0;
+
+  // Voting → percent (0..100), clamp, safe when NaN
+  const votingRatio = Math.max(0, Math.min(1, votesN / 1_000_000));
   const percent = Math.round(votingRatio * 100);
 
   // Final width calculation (only when md+ and we know sizes)
@@ -60,14 +96,22 @@ const PartyCard = ({ party }) => {
   let maxCapPx = 0;
   if (isMdUp && cardW > 0) {
     const minBarPx = getMinBarPx();
-    maxCapPx = getMaxBarPx(vw, cardW); // ← cap to the CARD width
+    maxCapPx = getMaxBarPx(vw, cardW);
     const maxWidthPx = maxCapPx;
     const minWidthPx = Math.min(minBarPx, maxWidthPx);
     const widthRange = Math.max(0, maxWidthPx - minWidthPx);
-    // round up a hair so 100% truly hits the edge (avoids sub-pixel gap)
     const raw = minWidthPx + widthRange * (percent / 100);
+    // ceil to avoid 1px gap on 100%
     finalWidthPx = Math.min(maxWidthPx, Math.ceil(raw));
   }
+
+  const color = safeStr(party?.color, "rgb(238,241,255)");
+  const barColor = safeStr(party?.color, "#1a286b");
+  const abbr = safeStr(party?.abbr, "placeholder");
+  const arabicName = safeStr(party?.arabicName, "");
+
+  const votes = formatVotes(votesRaw);
+  const chairs = formatChairs(party?.thisElecChairs);
 
   return (
     <article
@@ -82,7 +126,7 @@ const PartyCard = ({ party }) => {
     >
       <div
         className="w-1 h-full absolute top-0 right-0"
-        style={{ backgroundColor: party.color }}
+        style={{ backgroundColor: barColor }}
       />
 
       {/* Bar only when md+ */}
@@ -90,38 +134,41 @@ const PartyCard = ({ party }) => {
         <AnimatePresence>
           {open && (
             <motion.div
-              key={`${id}-bar`}
+              key={`${id}-bar-${finalWidthPx}`} // retrigger when size changes
               className="h-full absolute top-0 right-0 z-20"
               style={{
-                backgroundColor: party.color,
-                maxWidth: maxCapPx || cardW, // ensure it can reach the end
+                backgroundColor: barColor,
+                maxWidth: maxCapPx || cardW || undefined,
                 willChange: "width, opacity",
               }}
-              exit={{
-                width: 0,
-                transition: { duration: 0.3, ease: "easeInOut" },
-              }}
+              initial={{ width: 0 }}
               animate={{
-                width: [0, finalWidthPx],
+                width: finalWidthPx || 0,
                 transition: {
                   type: "tween",
                   duration: 0.75,
                   ease: "easeInOut",
                 },
               }}
+              exit={{
+                width: 0,
+                transition: { duration: 0.3, ease: "easeInOut" },
+              }}
             >
               <div className="flex flex-col text-white absolute top-1/2 -translate-y-1/2 left-3 justify-center items-center">
                 <motion.p
-                  className="digits font-eloquia text-3xl font-bold  text-white"
+                  className="digits font-eloquia text-3xl font-bold text-white"
                   style={{ left: 12 }}
+                  initial={{ opacity: 0 }}
                   animate={{
-                    opacity: open ? [0, 1] : 0,
+                    opacity: 1,
                     transition: {
                       type: "tween",
                       duration: 0.75,
                       ease: "easeInOut",
                     },
                   }}
+                  exit={{ opacity: 0 }}
                 >
                   <span className="text-xl font-normal">%</span>
                   {percent}
@@ -137,21 +184,23 @@ const PartyCard = ({ party }) => {
       {isMdUp && open && (
         <motion.div
           className="flex items-center justify-between w-full absolute z-30"
+          initial={{ opacity: 0 }}
           animate={{
-            opacity: open ? [0, 1] : 0,
+            opacity: 1,
             transition: { type: "tween", duration: 0.75, ease: "easeInOut" },
           }}
+          exit={{ opacity: 0 }}
         >
           <div className="flex items-center gap-2">
             <div className="w-12 h-12">
               <Image
-                src={`/${party.abbr}-W.png`}
+                src={`/${abbr}-W.png`}
                 width={100}
                 height={100}
-                alt={`${party.arabicName} شعار`}
+                alt={`${arabicName} شعار`}
               />
             </div>
-            <h3 className="font-bold text-white text-xl">{party.arabicName}</h3>
+            <h3 className="font-bold text-white text-xl">{arabicName}</h3>
           </div>
         </motion.div>
       )}
@@ -176,31 +225,23 @@ const PartyCard = ({ party }) => {
         <div className="flex items-center gap-2 w-6/12">
           <div className="min-size-8 size-11 max-size-12 flex justify-center items-center">
             <Image
-              src={`/${party.abbr}.png`}
+              src={`/${abbr}.png`}
               width={100}
               height={100}
-              alt={`${party.arabicName} شعار`}
+              alt={`${arabicName} شعار`}
             />
           </div>
-          <h3 className="font-semibold sm:text-xl text-lg">
-            {party.arabicName}
-          </h3>
+          <h3 className="font-semibold sm:text-xl text-lg">{arabicName}</h3>
         </div>
 
         <div className="flex flex-col-reverse items-center w-3/12 justify-center">
           <span>مقعد</span>
-          <h4 className="digits font-eloquia text-2xl font-bold">
-            {party.thisElecChairs > 9
-              ? party.thisElecChairs
-              : `0${party.thisElecChairs}`}
-          </h4>
+          <h4 className="digits font-eloquia text-2xl font-bold">{chairs}</h4>
         </div>
 
         <div className="flex flex-col-reverse items-center w-3/12 justify-center">
           <span>صوت</span>
-          <h4 className="digits font-eloquia text-2xl font-bold">
-            {party.numberOfVoting}
-          </h4>
+          <h4 className="digits font-eloquia text-2xl font-bold">{votes}</h4>
         </div>
       </motion.div>
 
@@ -208,33 +249,26 @@ const PartyCard = ({ party }) => {
       <div className="xs:hidden w-full h-fit flex gap-3 items-center relative">
         <div className="flex items-center overflow-hidden line-clamp-1">
           <div className="min-size-12 xs:size-12 size-16 flex justify-center items-center">
-            <Image
-              src={`/${party.abbr}.png`}
-              width={"100"}
-              height={"100"}
-              alt=""
-            />
+            <Image src={`/${abbr}.png`} width={100} height={100} alt="" />
           </div>
         </div>
 
         <div className="w-full flex flex-col items-start gap-1 my-1">
           <h3 className="w-full h-full flex items-center xs:pb-2 max-xs:pb-1 font-semibold text-lg">
-            {party.arabicName}
+            {arabicName}
           </h3>
 
           <div className="flex items-center justify-center text-nowrap">
             <span className="text-base">عدد المقاعد:</span>
             <h4 className="digits font-eloquia text-xl font-bold mr-1">
-              {party.thisElecChairs > 9
-                ? party.thisElecChairs
-                : `0${party.thisElecChairs}`}
+              {chairs}
             </h4>
           </div>
 
           <div className="flex items-center sm:w-3/12 justify-center text-nowrap">
             <span className="text-base">عدد الأصوات:</span>
             <h4 className="digits font-eloquia text-xl font-bold mr-1">
-              {party.numberOfVoting}
+              {votes}
             </h4>
           </div>
         </div>
