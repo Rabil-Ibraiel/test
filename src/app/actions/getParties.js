@@ -33,20 +33,37 @@ export async function getPartiesByRegion(regionCode) {
 }
 
 export async function getTopParties() {
-  return prisma.party.findMany({
-    orderBy: {
-      numberOfVoting: "desc",
-    },
-    take: 6,
-    select: {
+  const SPECIAL_ABBR = "PDK"; // ← put the unique abbr of الحزب الديموقراطي here
+
+  const special = await prisma.party.findFirst({
+    where: { abbr: SPECIAL_ABBR },
+     select: {
       id: true,
       arabicName: true,
       abbr: true,
       numberOfVoting: true,
       color: true,
       thisElecChairs: true,
+      lastElecChairs: true,
     },
   });
+
+  const rest = await prisma.party.findMany({
+    where: { abbr: { not: SPECIAL_ABBR } },
+    orderBy: { numberOfVoting: "desc" },
+     select: {
+      id: true,
+      arabicName: true,
+      abbr: true,
+      numberOfVoting: true,
+      color: true,
+      thisElecChairs: true,
+      lastElecChairs: true,
+    },
+  });
+  
+  const all = special ? [special, ...rest] : rest; // always puts the special party first
+  return all.slice(0, 6);
 }
 
 export async function getParties() {
