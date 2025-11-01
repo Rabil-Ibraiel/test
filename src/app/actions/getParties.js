@@ -2,6 +2,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function getPartiesByRegion(regionCode) {
   const rows = await prisma.location.findMany({
@@ -54,4 +55,23 @@ export async function getParties() {
       locations: true,
     },
   });
+}
+
+
+
+export async function getPartiesCard() {
+  const SPECIAL_ABBR = "PDK"; // ← put the unique abbr of الحزب الديموقراطي here
+
+  const special = await prisma.party.findFirst({
+    where: { abbr: SPECIAL_ABBR },
+    include: { locations: true },
+  });
+
+  const rest = await prisma.party.findMany({
+    where: { abbr: { not: SPECIAL_ABBR } },
+    include: { locations: true },
+    orderBy: { numberOfVoting: "desc" },
+  });
+
+  return special ? [special, ...rest] : rest; // always puts the special party first
 }

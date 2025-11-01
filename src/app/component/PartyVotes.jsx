@@ -24,6 +24,7 @@ const formatVotes = (val) => {
 
 // Pads to 2 digits only for 1..9; shows plain "0" for zero.
 const formatChairs = (val) => {
+
   const n = normNum(val);
   if (n === null) return "—";
   const i = Math.trunc(n);

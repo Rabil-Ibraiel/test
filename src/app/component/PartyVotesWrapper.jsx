@@ -23,6 +23,7 @@ export default function PartyVotesWrapper({ selectedRegion }) {
           const normalizedCode = selectedRegion.replace("-", "_");
           const data = await getPartiesByRegion(normalizedCode);
           if (alive) setParties(data || []);
+          console.log(data)
         }
       } finally {
         if (alive) setLoading(false);
