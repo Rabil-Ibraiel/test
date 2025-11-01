@@ -187,6 +187,7 @@ const PartyVotes = ({ party, isLoading = false }) => {
             <h3 className="xs:w-[40%] h-full flex items-center xs:pb-2 max-xs:pb-1 font-semibold text-lg ">
               {arabicName}
             </h3>
+            
 
             <div className="flex max-xs:flex-col xs:justify-between xs:items-center sm:pl-4 pl-1 w-[55%] sm:gap-6 xs:gap-4 text-nowrap">
               <div className="flex">
