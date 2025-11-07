@@ -12,10 +12,9 @@ model Party {
   arabicName     String
   abbr           String     @unique
   numberOfVoting Int
-  // Maps Prisma name -> existing DB column
   lastElecChairs Int        @map("lastYearChairs")
   thisElecChairs Int        @map("thisYearChairs")
-  color          String // make String? if some rows don't have a color
+  color          String
   locations      Location[]
 
   @@index([abbr])
@@ -29,9 +28,7 @@ model Location {
   partyId        Int
   party          Party  @relation(fields: [partyId], references: [id], onDelete: Cascade)
 
-  // Enforce: at most one row per (party, region)
   @@unique([partyId, regionCode], name: "party_region_unique")
-  // Helpful for queries
   @@index([partyId])
   @@index([regionCode])
 }

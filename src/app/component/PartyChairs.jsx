@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { getParties } from "../actions/getParties";
 
-/* ========================= Skeleton: styles & components ========================= */
+
 const SkeletonStyles = () => (
   <style jsx global>{`
     /* subtle shimmer on inner line */
@@ -75,7 +75,6 @@ const SkeletonStyles = () => (
 
 const TileSkeleton = () => (
   <div className="h-12 min-w-[280px] max-w-[35vw] bg-[#DDE2EF] even:bg-[#E9ECF6] relative overflow-hidden">
-    {/* one minimal “text” line */}
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="sk-line h-3 w-1/2 rounded" />
     </div>
@@ -83,7 +82,7 @@ const TileSkeleton = () => (
 );
 
 const PartyChairsSkeleton = () => {
-  // Build one HALF so both halves are identical widths → seamless loop
+
   const HALF = Array.from({ length: 8 }, (_, i) => <TileSkeleton key={i} />);
   return (
     <>
@@ -100,7 +99,7 @@ const PartyChairsSkeleton = () => {
   );
 };
 
-/* ========================= Helpers ========================= */
+
 const parseColor = (color) => {
   if (!color) return [0, 0, 0];
   if (color.startsWith("#")) {
@@ -121,17 +120,16 @@ const lightenColor = (color, k = 0.18) => {
   return `rgb(${L(r)}, ${L(g)}, ${L(b)})`;
 };
 
-/* ========================= Component ========================= */
 const PartyChairs = () => {
-  const [click, setClick] = useState(""); // abbr of selected tile
+  const [click, setClick] = useState("");
   const [parties, setParties] = useState([]);
-  const [loading, setLoading] = useState(true); // start true → skeleton immediately
+  const [loading, setLoading] = useState(true);
 
   const wrapperRef = useRef(null);
   const trackRef = useRef(null);
   const pausedRef = useRef(false);
 
-  // Fetch data
+
   useEffect(() => {
     let alive = true;
     setLoading(true);
@@ -147,17 +145,15 @@ const PartyChairs = () => {
     };
   }, []);
 
-  // Pause marquee when overlay is open
   useEffect(() => {
     pausedRef.current = Boolean(click);
   }, [click]);
 
-  // Marquee loop (real data)
   useEffect(() => {
     if (!trackRef.current) return;
     let rafId;
     let last = performance.now();
-    const SPEED = 60; // px/s
+    const SPEED = 60;
     const halfWidthRef = { current: 0 };
     const xRef = { current: 0 };
 
@@ -181,7 +177,6 @@ const PartyChairs = () => {
       }
       let x = xRef.current || 0;
 
-      // RTL—move to the right
       if (!pausedRef.current) x += SPEED * dt;
 
       const halfWidth = halfWidthRef.current || track.scrollWidth / 2;
@@ -206,7 +201,6 @@ const PartyChairs = () => {
     [parties, click]
   );
 
-  /* ---------- Render ---------- */
   if (loading) return <PartyChairsSkeleton />;
 
   return (

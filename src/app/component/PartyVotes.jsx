@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useState } from "react";
 
-// ---------- helpers ----------
 const normNum = (val) => {
   if (val === null || val === undefined) return null;
   if (typeof val === "bigint") {
@@ -19,12 +18,11 @@ const normNum = (val) => {
 const formatVotes = (val) => {
   const n = normNum(val);
   if (n === null) return "—";
-  return Math.trunc(n).toLocaleString("en-US");
+  if (n > 9) return Math.trunc(n).toLocaleString("en-US");
+  return Math.trunc(n).toLocaleString("en-US").padStart(2, "0");
 };
 
-// Pads to 2 digits only for 1..9; shows plain "0" for zero.
 const formatChairs = (val) => {
-
   const n = normNum(val);
   if (n === null) return "—";
   const i = Math.trunc(n);
@@ -35,7 +33,6 @@ const formatChairs = (val) => {
 const safe = (s, fallback = "") =>
   typeof s === "string" && s.trim() ? s : fallback;
 
-// ---------- skeleton (shimmer) ----------
 const SkeletonStyles = () => (
   <style jsx global>{`
     @keyframes shimmer {
@@ -101,7 +98,6 @@ const PartyVotesSkeleton = () => (
   </>
 );
 
-// ---------- component ----------
 const PartyVotes = ({ party, isLoading = false }) => {
   const [hover, setHover] = useState(false);
   if (isLoading || !party) return <PartyVotesSkeleton />;
@@ -188,7 +184,6 @@ const PartyVotes = ({ party, isLoading = false }) => {
             <h3 className="xs:w-[40%] h-full flex items-center xs:pb-2 max-xs:pb-1 font-semibold text-lg ">
               {arabicName}
             </h3>
-            
 
             <div className="flex max-xs:flex-col xs:justify-between xs:items-center sm:pl-4 pl-1 w-[55%] sm:gap-6 xs:gap-4 text-nowrap">
               <div className="flex">

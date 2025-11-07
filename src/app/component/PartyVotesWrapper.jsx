@@ -5,14 +5,13 @@ import PartyVotes from "./PartyVotes";
 
 export default function PartyVotesWrapper({ selectedRegion }) {
   const [parties, setParties] = useState([]);
-  const [loading, setLoading] = useState(true); // ⬅️ start true so skeleton shows immediately
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
 
-    // ⬅️ show skeleton right away on every change
     setLoading(true);
-    setParties([]); // ensures we don't render stale rows while loading
+    setParties([]);
 
     (async () => {
       try {
@@ -23,17 +22,19 @@ export default function PartyVotesWrapper({ selectedRegion }) {
           const normalizedCode = selectedRegion.replace("-", "_");
           const data = await getPartiesByRegion(normalizedCode);
           if (alive) setParties(data || []);
-          console.log(data)
+          console.log(data);
         }
       } finally {
         if (alive) setLoading(false);
       }
     })();
 
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [selectedRegion]);
 
-  const skeletonCount = 6; // tweak to taste
+  const skeletonCount = 6;
 
   return (
     <div className="lg:w-2/3 md:w-8/12 w-full rounded overflow-hidden flex flex-col lg:gap-3 gap-2">

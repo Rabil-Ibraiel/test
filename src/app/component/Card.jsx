@@ -9,7 +9,6 @@ const getMinBarPx = () => 400;
 const getMaxBarPx = (vw, cardW) =>
   vw >= BREAKPOINTS.lg ? Math.min(1125, cardW + 60) : cardW + 60;
 
-/* ---------- helpers ---------- */
 const normNum = (val) => {
   if (val === null || val === undefined) return null;
   if (typeof val === "number") return Number.isFinite(val) ? val : null;
@@ -17,19 +16,18 @@ const normNum = (val) => {
     const n = Number(val);
     return Number.isFinite(n) ? n : null;
   }
-  // string-ish
+
   const n = Number(String(val).trim());
   return Number.isFinite(n) ? n : null;
 };
 
-// votes: localized with thousands separators, "—" if missing
 const formatVotes = (val) => {
   const n = normNum(val);
   if (n === null) return "—";
-  return Math.trunc(n).toLocaleString("en-US");
+  if (n > 9) return Math.trunc(n).toLocaleString("en-US");
+  return Math.trunc(n).toLocaleString("en-US").padStart(2, "0");
 };
 
-// chairs: show "0" for zero, pad 1..9 to 2 digits, pass-through >=10
 const formatChairs = (val) => {
   const n = normNum(val);
   if (n === null) return "—";
@@ -41,9 +39,7 @@ const formatChairs = (val) => {
 const safeStr = (s, fallback = "") =>
   typeof s === "string" && s.trim() ? s : fallback;
 
-/* ---------- component ---------- */
 const PartyCard = ({ party }) => {
-  // guard early
   if (!party) return null;
 
   const id = safeStr(party?.abbr, "PDK");
@@ -83,15 +79,12 @@ const PartyCard = ({ party }) => {
     };
   }, []);
 
-  // numbers (normalized once)
   const votesRaw = party?.numberOfVoting ?? null;
   const votesN = normNum(votesRaw) ?? 0;
 
-  // Voting → percent (0..100), clamp, safe when NaN
   const votingRatio = Math.max(0, Math.min(1, votesN / 1_000_000));
   const percent = Math.round(votingRatio * 100);
 
-  // Final width calculation (only when md+ and we know sizes)
   let finalWidthPx = 0;
   let maxCapPx = 0;
   if (isMdUp && cardW > 0) {
@@ -101,7 +94,6 @@ const PartyCard = ({ party }) => {
     const minWidthPx = Math.min(minBarPx, maxWidthPx);
     const widthRange = Math.max(0, maxWidthPx - minWidthPx);
     const raw = minWidthPx + widthRange * (percent / 100);
-    // ceil to avoid 1px gap on 100%
     finalWidthPx = Math.min(maxWidthPx, Math.ceil(raw));
   }
 
@@ -134,7 +126,7 @@ const PartyCard = ({ party }) => {
         <AnimatePresence>
           {open && (
             <motion.div
-              key={`${id}-bar-${finalWidthPx}`} // retrigger when size changes
+              key={`${id}-bar-${finalWidthPx}`}
               className="h-full absolute top-0 right-0 z-20"
               style={{
                 backgroundColor: barColor,

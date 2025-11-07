@@ -172,7 +172,6 @@ export default function Home() {
 
       <PartiesRegionWrapper />
 
-      {/* ----------- */}
 
       <section className="mt-3">
         <h2 className="font-semibold text-xl w-full h-fit py-2 pr-8 bg-linear-to-t from-[#275394] to-[#4169A5] text-white rounded">

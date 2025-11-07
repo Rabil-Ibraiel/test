@@ -5,29 +5,41 @@ import prisma from "@/lib/prisma";
 import { unstable_noStore as noStore } from "next/cache"; // ← use unstable_ and alias
 
 export async function getPartiesByRegion(regionCode) {
-  const rows = await prisma.location.findMany({
-    where: { regionCode },
-    orderBy: { numberOfVoting: "desc" },
-    take: 6,
+  const SPECIAL_ABBR = "PDK";
+
+  // 1) Try to fetch PDK for this region
+  const specialRow = await prisma.location.findFirst({
+    where: { regionCode, party: { abbr: SPECIAL_ABBR } },
     select: {
-      numberOfVoting: true, // Int
-      thisElecChairs: true,
+      numberOfVoting: true,
+      thisElecChairs: true, // ← if chairs live on Location
       party: {
-        select: {
-          id: true,
-          arabicName: true,
-          abbr: true,
-          color: true,
-        },
+        select: { id: true, arabicName: true, abbr: true, color: true },
       },
     },
   });
 
-  // Flatten: return party info + region votes
+  // 2) Fetch the rest (exclude PDK), ordered by votes
+  const restRows = await prisma.location.findMany({
+    where: { regionCode, party: { abbr: { not: SPECIAL_ABBR } } },
+    orderBy: { numberOfVoting: "desc" },
+    take: 6 - (specialRow ? 1 : 0),
+    select: {
+      numberOfVoting: true,
+      thisElecChairs: true, // ← if chairs live on Location
+      party: {
+        select: { id: true, arabicName: true, abbr: true, color: true },
+      },
+    },
+  });
+
+  const rows = specialRow ? [specialRow, ...restRows] : restRows;
+
+  // Flatten to your existing shape
   return rows.map((r) => ({
     ...r.party,
     regionCode,
-    numberOfVoting: r.numberOfVoting, // already Int
+    numberOfVoting: r.numberOfVoting,
     thisElecChairs: r.thisElecChairs,
   }));
 }
@@ -37,7 +49,7 @@ export async function getTopParties() {
 
   const special = await prisma.party.findFirst({
     where: { abbr: SPECIAL_ABBR },
-     select: {
+    select: {
       id: true,
       arabicName: true,
       abbr: true,
@@ -51,7 +63,7 @@ export async function getTopParties() {
   const rest = await prisma.party.findMany({
     where: { abbr: { not: SPECIAL_ABBR } },
     orderBy: { numberOfVoting: "desc" },
-     select: {
+    select: {
       id: true,
       arabicName: true,
       abbr: true,
@@ -61,7 +73,7 @@ export async function getTopParties() {
       lastElecChairs: true,
     },
   });
-  
+
   const all = special ? [special, ...rest] : rest; // always puts the special party first
   return all.slice(0, 6);
 }
@@ -73,8 +85,6 @@ export async function getParties() {
     },
   });
 }
-
-
 
 export async function getPartiesCard() {
   noStore();
@@ -90,6 +100,6 @@ export async function getPartiesCard() {
     include: { locations: true },
     orderBy: { numberOfVoting: "desc" },
   });
-  
+
   return special ? [special, ...rest] : rest; // always puts the special party first
 }
