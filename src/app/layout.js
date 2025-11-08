@@ -92,7 +92,7 @@ export const metadata = {
     title: "نتائج انتخابات العراق 2025 — قناة شمس",
     description:
       "نتائج انتخابات العراق 2025 على قناة شمس: عرض للأصوات والمقاعد لكل حزب.",
-    images: [OG_IMAGE],
+    images: [TW_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
