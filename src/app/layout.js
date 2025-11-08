@@ -52,7 +52,7 @@ const RAW_BASE = process.env.NEXT_PUBLIC_SITE_URL?.startsWith("http")
   : `https://${process.env.NEXT_PUBLIC_SITE_URL || "test-iota-two.vercel.app"}`;
 
 const BASE = new URL(RAW_BASE);
-const OG = new URL("/opengraph-image.png", BASE).toString();
+const OG = new URL("/opengraph-image.png?v=2", BASE).toString();
 
 export const metadata = {
   metadataBase: BASE,
@@ -111,7 +111,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="antialiased">{children}</body>
+      <body className="${shams.variable} ${eloquia.variable} antialiased">
+        {children}
+      </body>
     </html>
   );
 }
