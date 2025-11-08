@@ -48,12 +48,7 @@ const eloquia = localFont({
 });
 
 const SITE =
-  process.env.NEXT_PUBLIC_SITE_URL &&
-  process.env.NEXT_PUBLIC_SITE_URL.startsWith("http")
-    ? process.env.NEXT_PUBLIC_SITE_URL
-    : `https://${
-        process.env.NEXT_PUBLIC_SITE_URL || "test-iota-two.vercel.app"
-      }`;
+  process.env.NEXT_PUBLIC_SITE_URL || "https://test-iota-two.vercel.app";
 
 const OG = `${SITE}/opengraph-image.png?v=4`; // cache-bust
 
