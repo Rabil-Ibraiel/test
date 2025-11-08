@@ -58,12 +58,19 @@ const SITE =
 // 👇 compat alias so any leftover references keep working
 const BASE = SITE;
 
-const OG = `${SITE}/opengraph-image.png?v=5`;
+const OG = `${SITE}/opengraph-image.png`;
 const OG_IMAGE = {
   url: OG,
   width: 1200,
   height: 630,
   alt: "OG",
+};
+const TW = `${SITE}/twitter-image.png?v=5`;
+const TW_IMAGE = {
+  url: TW,
+  width: 1200,
+  height: 630,
+  alt: "TW",
 };
 
 export const metadata = {
@@ -92,7 +99,7 @@ export const metadata = {
     title: "نتائج انتخابات العراق 2025 — قناة شمس",
     description:
       "نتائج انتخابات العراق 2025 على قناة شمس: عرض للأصوات والمقاعد لكل حزب.",
-    images: [OG_IMAGE],
+    images: [TW_IMAGE],
   },
 
   icons: {
