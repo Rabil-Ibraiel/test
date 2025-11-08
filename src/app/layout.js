@@ -55,10 +55,10 @@ const SITE =
         process.env.NEXT_PUBLIC_SITE_URL || "https://test-iota-two.vercel.app"
       }`;
 
-// 👇 compat alias so any leftover references keep working
+
 const BASE = SITE;
 
-const OG = `${SITE}/opengraph-image.png`;
+const OG = `${SITE}/opengraph-image.png?v=5`;
 const OG_IMAGE = {
   url: OG,
   width: 1200,

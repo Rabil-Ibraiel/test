@@ -8,6 +8,7 @@
 }
 
 @theme {
+  --breakpoint-xxs: 340px; /* new */
   --breakpoint-xs: 450px;   /* new */
   --breakpoint-sm: 640px;   /* override if you want */
   --breakpoint-md: 700px;

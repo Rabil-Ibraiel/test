@@ -152,20 +152,15 @@ const PartyVotes = ({ party, isLoading = false }) => {
           className="w-1 h-full absolute top-0 right-0 z-10"
           style={{ backgroundColor: barColor }}
         />
-        <div className="flex items-center overflow-hidden mr-1">
+        <div className="max-xxs:hidden flex items-center overflow-hidden mr-1">
           <div className="min-size-12 xs:size-12 size-16 flex justify-center items-center">
-            <Image
-              src={`/${abbr}.svg`}
-              width={100}
-              height={100}
-              alt=""
-            />
+            <Image src={`/${abbr}.svg`} width={100} height={100} alt="" />
           </div>
         </div>
 
-        <div className="flex w-full mt-2">
+        <div className="flex w-full mt-2 max-xxs:pr-3">
           <div className="flex max-xs:flex-col w-full text-wrap">
-            <h3 className="xs:w-[40%] h-full flex items-center xs:pb-2 max-xs:pb-1 font-semibold text-lg ">
+            <h3 className="xs:w-[36%] h-full flex items-center xs:pb-2 max-xs:pb-1 font-semibold text-lg ">
               {arabicName}
             </h3>
 
