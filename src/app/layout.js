@@ -54,59 +54,62 @@ const RAW_BASE = process.env.NEXT_PUBLIC_SITE_URL?.startsWith("http")
 const BASE = new URL(RAW_BASE);
 const OG = new URL("/opengraph-image.png?v=2", BASE).toString();
 
-export const metadata = {
-  metadataBase: BASE,
-  title: {
-    default: "نتائج انتخابات العراق 2025 — شمس TV",
-    template: "%s — شمس TV",
-  },
-  description:
-    "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
-  applicationName: "شمس TV — الانتخابات 2025",
-  themeColor: "#275394",
+export async function generateMetadata() {
+  const h = headers();
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const base = `${proto}://${host}`;
+  const og = `${base}/opengraph-image.png?v=3`; // bump v if needed
 
-  openGraph: {
-    type: "website",
-    siteName: "شمس TV",
-    locale: "ar_IQ",
-    url: BASE.toString(),
-    title: "نتائج انتخابات العراق 2025 — شمس TV",
+  return {
+    metadataBase: new URL(base),
+    title: {
+      default: "نتائج انتخابات العراق 2025 — شمس TV",
+      template: "%s — شمس TV",
+    },
     description:
       "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
-    images: [
-      { url: OG, width: 1200, height: 630, alt: "نتائج الانتخابات — شمس TV" },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "نتائج انتخابات العراق 2025 — شمس TV",
-    description:
-      "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
-    images: [OG],
-  },
+    openGraph: {
+      type: "website",
+      siteName: "شمس TV",
+      locale: "ar_IQ",
+      url: base, // absolute
+      title: "نتائج انتخابات العراق 2025 — شمس TV",
+      description:
+        "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
+      images: [{ url: og, width: 1200, height: 630 }], // absolute + cache-bust
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "نتائج انتخابات العراق 2025 — شمس TV",
+      description:
+        "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
+      images: [og], // absolute + cache-bust
+    },
 
-  icons: {
-    icon: [{ url: "/Logo.svg", type: "image/svg+xml" }],
-    shortcut: ["/Logo.svg"],
-    other: [{ rel: "mask-icon", url: "/Logo.svg", color: "#275394" }],
-  },
+    icons: {
+      icon: [{ url: "/Logo.svg", type: "image/svg+xml" }],
+      shortcut: ["/Logo.svg"],
+      other: [{ rel: "mask-icon", url: "/Logo.svg", color: "#275394" }],
+    },
 
-  alternates: {
-    canonical: BASE.toString(),
-    languages: { "ar-IQ": "/", en: "/en" },
-  },
+    alternates: {
+      canonical: BASE.toString(),
+      languages: { "ar-IQ": "/", en: "/en" },
+    },
 
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-};
+  };
+}
 
 export default function RootLayout({ children }) {
   return (
