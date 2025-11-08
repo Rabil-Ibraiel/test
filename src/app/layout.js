@@ -59,6 +59,12 @@ const SITE =
 const BASE = SITE;
 
 const OG = `${SITE}/opengraph-image.png?v=5`;
+const OG_IMAGE = {
+  url: OG,
+  width: 1200,
+  height: 630,
+  alt: "OG",
+};
 
 export const metadata = {
   metadataBase: new URL(SITE),
@@ -79,14 +85,14 @@ export const metadata = {
     title: "نتائج انتخابات العراق 2025 — شمس TV",
     description:
       "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
-    images: [{ url: OG, width: 1200, height: 630, alt: "OG" }],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "نتائج انتخابات العراق 2025 — شمس TV",
     description:
       "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
-    images: [OG],
+    images: [OG_IMAGE],
   },
 
   icons: {
