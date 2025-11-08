@@ -46,20 +46,17 @@ const LOGOS = {
 
 export default function PartyLogo({ abbr, white = false, className = "" }) {
   const raw = (abbr || "").trim();
-  const base = raw.replace(/-W$/i, "").toUpperCase();   // normalize
+  const base = raw.replace(/-W$/i, "").toUpperCase();
   const wantWhite = white || /-W$/i.test(raw);
 
   const entry = LOGOS[base];
 
-  // Choose component variant if available
   let LogoCmp = entry ? (wantWhite ? entry.white : entry.color) : undefined;
 
-  // If color is missing, fall back to white; if white missing, fall back to color
   if (entry && !LogoCmp) {
     LogoCmp = wantWhite ? entry.color : entry.white;
   }
 
-  // Final fallback to public path so it never disappears
   if (!LogoCmp || typeof LogoCmp === "string") {
     const publicSrc = `/${base}${wantWhite ? "-W" : ""}.svg`;
     return (
@@ -74,7 +71,6 @@ export default function PartyLogo({ abbr, white = false, className = "" }) {
     );
   }
 
-  // Inline SVG component (instant)
   return (
     <LogoCmp
       className={className || "block w-full h-full"}

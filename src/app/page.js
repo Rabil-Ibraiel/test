@@ -7,7 +7,7 @@ export default function Home() {
     <main className="lg:max-w-6xl mx-auto px-4 mb-8 mt-4 relative flex flex-col md:gap-6 sm:gap-4 gap-3">
       <section
         className="relative w-full rounded overflow-hidden"
-        style={{ aspectRatio: "1152 / 200" }} // keeps the original 1152x242 ratio
+        style={{ aspectRatio: "1152 / 200" }}
       >
         {/* Gradient background (fills container) */}
         <svg

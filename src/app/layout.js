@@ -47,10 +47,15 @@ const eloquia = localFont({
   fallback: ["Arial", "sans-serif"],
 });
 
+const RAW_BASE = process.env.NEXT_PUBLIC_SITE_URL?.startsWith("http")
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : `https://${process.env.NEXT_PUBLIC_SITE_URL || "test-iota-two.vercel.app"}`;
+
+const BASE = new URL(RAW_BASE);
+const OG = new URL("/opengraph-image.png", BASE).toString();
+
 export const metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://test-iota-two.vercel.app"
-  ),
+  metadataBase: BASE,
   title: {
     default: "نتائج انتخابات العراق 2025 — شمس TV",
     template: "%s — شمس TV",
@@ -60,22 +65,16 @@ export const metadata = {
   applicationName: "شمس TV — الانتخابات 2025",
   themeColor: "#275394",
 
-  // ✅ Social previews
   openGraph: {
     type: "website",
     siteName: "شمس TV",
     locale: "ar_IQ",
-    url: "/",
+    url: BASE.toString(),
     title: "نتائج انتخابات العراق 2025 — شمس TV",
     description:
       "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
     images: [
-      {
-        url: "/opengraph-image.png",
-        width: 1200,
-        height: 630,
-        alt: "نتائج الانتخابات — شمس TV",
-      },
+      { url: OG, width: 1200, height: 630, alt: "نتائج الانتخابات — شمس TV" },
     ],
   },
   twitter: {
@@ -83,24 +82,17 @@ export const metadata = {
     title: "نتائج انتخابات العراق 2025 — شمس TV",
     description:
       "نتائج انتخابات العراق 2025 على شمس TV: عرض للأصوات والمقاعد لكل حزب.",
-    images: ["/opengraph-image.png"],
+    images: [OG],
   },
 
-  // ✅ Use Logo.svg as favicon (+ optional fallbacks)
   icons: {
-    icon: [
-      { url: "/Logo.svg", type: "image/svg+xml" }, // modern browsers
-      { url: "/favicon.ico" }, // fallback if you have it
-    ],
+    icon: [{ url: "/Logo.svg", type: "image/svg+xml" }],
     shortcut: ["/Logo.svg"],
-    // Optional: pinned tab for Safari (uses the SVG path color)
     other: [{ rel: "mask-icon", url: "/Logo.svg", color: "#275394" }],
-    // Optional (recommended): add apple touch icon PNG if you export one
-    // apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 
   alternates: {
-    canonical: "/",
+    canonical: BASE.toString(),
     languages: { "ar-IQ": "/", en: "/en" },
   },
 
@@ -119,9 +111,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${shams.variable} ${eloquia.variable} antialiased`}>
-        {children}
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
