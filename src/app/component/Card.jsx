@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import PartyLogo from "./PartyLogo";
 
 const BREAKPOINTS = { md: 700, lg: 1024 };
 
@@ -39,7 +40,7 @@ const formatChairs = (val) => {
 const safeStr = (s, fallback = "") =>
   typeof s === "string" && s.trim() ? s : fallback;
 
-const PartyCard = ({ party }) => {
+const PartyCard = ({ party, TNV }) => {
   if (!party) return null;
 
   const id = safeStr(party?.abbr, "PDK");
@@ -82,7 +83,7 @@ const PartyCard = ({ party }) => {
   const votesRaw = party?.numberOfVoting ?? null;
   const votesN = normNum(votesRaw) ?? 0;
 
-  const votingRatio = Math.max(0, Math.min(1, votesN / 1_000_000));
+  const votingRatio = Math.max(0, Math.min(1, votesN / TNV));
   const percent = Math.round(votingRatio * 100);
 
   let finalWidthPx = 0;
@@ -138,7 +139,7 @@ const PartyCard = ({ party }) => {
                 width: finalWidthPx || 0,
                 transition: {
                   type: "tween",
-                  duration: 0.75,
+                  duration: 0.6,
                   ease: "easeInOut",
                 },
               }}
@@ -147,26 +148,26 @@ const PartyCard = ({ party }) => {
                 transition: { duration: 0.3, ease: "easeInOut" },
               }}
             >
-              <div className="flex flex-col text-white absolute top-1/2 -translate-y-1/2 left-3 justify-center items-center">
-                <motion.p
-                  className="digits font-eloquia text-3xl font-bold text-white"
-                  style={{ left: 12 }}
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      type: "tween",
-                      duration: 0.75,
-                      ease: "easeInOut",
-                    },
-                  }}
-                  exit={{ opacity: 0 }}
-                >
+              <motion.div
+                style={{ left: 12 }}
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    type: "tween",
+                    duration: 0.9,
+                    ease: "easeInOut",
+                  },
+                }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col text-white absolute top-1/2 -translate-y-1/2 left-3 justify-center items-center"
+              >
+                <p className="digits font-eloquia text-3xl font-bold text-white">
                   <span className="text-xl font-normal">%</span>
                   {percent}
-                </motion.p>
+                </p>
                 <span className="text-xs font-normal">نسبة التصويت</span>
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -179,18 +180,13 @@ const PartyCard = ({ party }) => {
           initial={{ opacity: 0 }}
           animate={{
             opacity: 1,
-            transition: { type: "tween", duration: 0.75, ease: "easeInOut" },
+            transition: { type: "tween", duration: 1, ease: "easeInOut" },
           }}
           exit={{ opacity: 0 }}
         >
           <div className="flex items-center gap-2">
             <div className="w-12 h-12">
-              <Image
-                src={`/${abbr}-W.png`}
-                width={100}
-                height={100}
-                alt={`${arabicName} شعار`}
-              />
+              <PartyLogo abbr={abbr} white={true} />
             </div>
             <h3 className="font-bold text-white text-xl">{arabicName}</h3>
           </div>
@@ -216,12 +212,7 @@ const PartyCard = ({ party }) => {
       >
         <div className="flex items-center gap-2 w-6/12">
           <div className="min-size-8 size-11 max-size-12 flex justify-center items-center">
-            <Image
-              src={`/${abbr}.png`}
-              width={100}
-              height={100}
-              alt={`${arabicName} شعار`}
-            />
+            <Image src={`/${abbr}.svg`} width={100} height={100} alt="" />
           </div>
           <h3 className="font-semibold sm:text-xl text-lg">{arabicName}</h3>
         </div>
@@ -241,7 +232,7 @@ const PartyCard = ({ party }) => {
       <div className="xs:hidden w-full h-fit flex gap-3 items-center relative">
         <div className="flex items-center overflow-hidden line-clamp-1">
           <div className="min-size-12 xs:size-12 size-16 flex justify-center items-center">
-            <Image src={`/${abbr}.png`} width={100} height={100} alt="" />
+            <Image src={`/${abbr}.svg`} width={100} height={100} alt="" />
           </div>
         </div>
 

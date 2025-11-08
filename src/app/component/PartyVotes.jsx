@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import PartyLogo from "./PartyLogo";
+import Image from "next/image";
 
 const normNum = (val) => {
   if (val === null || val === undefined) return null;
@@ -127,23 +128,7 @@ const PartyVotes = ({ party, isLoading = false }) => {
         />
         <div className="flex items-center gap-2 lg:w-6/12 md:w-[55%] overflow-hidden lg:pr-2 line-clamp-1">
           <div className="lg:size-10 md:size-8 size-10 lg:p-0.5">
-            {hover ? (
-              <Image
-                priority
-                src={`/${abbr}-W.png`}
-                width={100}
-                height={100}
-                alt=""
-              />
-            ) : (
-              <Image
-                priority
-                src={`/${abbr}.png`}
-                width={100}
-                height={100}
-                alt=""
-              />
-            )}
+            <PartyLogo abbr={abbr} white={hover} />
           </div>
           <h3 className="lg:text-lg leading-5 font-semibold">{arabicName}</h3>
         </div>
@@ -170,8 +155,7 @@ const PartyVotes = ({ party, isLoading = false }) => {
         <div className="flex items-center overflow-hidden mr-1">
           <div className="min-size-12 xs:size-12 size-16 flex justify-center items-center">
             <Image
-              priority
-              src={`/${abbr}.png`}
+              src={`/${abbr}.svg`}
               width={100}
               height={100}
               alt=""

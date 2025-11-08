@@ -103,3 +103,9 @@ export async function getPartiesCard() {
 
   return special ? [special, ...rest] : rest; // always puts the special party first
 }
+
+export async function getTotalNumberOfVoting() {
+  const total = await prisma.totalNumberOfVoting.findFirst();
+
+  return total.totalNumberOfVoting;
+}

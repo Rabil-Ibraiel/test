@@ -32,3 +32,8 @@ model Location {
   @@index([partyId])
   @@index([regionCode])
 }
+
+model totalNumberOfVoting {
+  id             Int    @id @default(autoincrement())
+  totalNumberOfVoting Int
+}
