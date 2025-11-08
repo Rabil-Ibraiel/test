@@ -48,9 +48,17 @@ const eloquia = localFont({
 });
 
 const SITE =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://test-iota-two.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL &&
+  process.env.NEXT_PUBLIC_SITE_URL.startsWith("https")
+    ? process.env.NEXT_PUBLIC_SITE_URL
+    : `${
+        process.env.NEXT_PUBLIC_SITE_URL || "https://test-iota-two.vercel.app"
+      }`;
 
-const OG = `${SITE}/opengraph-image.png?v=4`; // cache-bust
+// 👇 compat alias so any leftover references keep working
+const BASE = SITE;
+
+const OG = `${SITE}/opengraph-image.png?v=5`;
 
 export const metadata = {
   metadataBase: new URL(SITE),
